@@ -3,29 +3,45 @@
 #include <stdlib.h>
 #define LINESIZE 300
 void removeJunk(char *line);
-int main()
+int identifierCheck(char *id);
+int main(int argc, char *argv[])
 {
-	FILE *fp;
+	FILE *fin, *fout;
 	int lineNum = 1;
 	int insideComment = 0;
 	char *line = malloc(LINESIZE);
+  char *infileName = malloc(sizeof(argv[1]));
+  char *outfileName = malloc(sizeof(argv[2]));
 
-	if((fp = fopen("test.c", "r")) == NULL)
+  infileName = argv[1];
+  outfileName = argv[2];
+  fin = fopen(infileName, "r");
+  fout = fopen(outfileName, "w+");
+  if(fout == NULL)
+  {
+    fprintf(stderr, "Could not open file. \n");
+    exit(1);
+  }
+  if(fin == NULL)
 	{
 		fprintf(stderr, "Could not open file. \n");
+    exit(1);
 	}
 
-	while(fgets(line, LINESIZE, fp))
+	while(fgets(line, LINESIZE, fin))
 	{
+    //get rid of characters we don't need
+		removeJunk(line);
+
 		int len = strlen(line);
 		int isComment = 0;
+    int i;
 		//need to add null terminator
 		if (line[len-1] == '\n')
 			line[len-1] = '\0';
 
-		removeJunk(line);
-		int i;
 		char *ch = line;
+    //see if the line is a line comment
 		for(i = 0; i < len-1; i++)
 		{
 			if(*(ch+i) == '/' && *(ch+i+1) == '/')
@@ -33,35 +49,37 @@ int main()
 				isComment = 1;
 			}
 		}
+    //skip the line if it's a comment
 		if(isComment == 1)
 		{
-			printf("Found a comment\n");
+      lineNum++;
 			continue;
 		}
 
-		//printf("Line: %s\n", line);
 		char *id = malloc(sizeof(line));
 		strcpy(id, line);
 		char *token;
+    //tokenize string to seperate identifiers
 		token = strtok(id, " ");
 		while(token != NULL)
 		{
-			printf("Token: %s\n", token);
 			if(*token == '\n')
 			{
+        //move on to the next token
 				token = strtok(NULL, " ");
 				continue;
 			}
 			if(!identifierCheck(token))
 			{
+          //move on to the next token
 					token = strtok(NULL, " ");
-					lineNum++;
 					continue;
 			}
 			else
 			{
 				struct node *temp = find(token);
-				if(temp == NULL)
+        //if node does not exist, insert a new link
+      	if(temp == NULL)
 				{
 					struct queue q;
 					q.f = 0;
@@ -70,11 +88,10 @@ int main()
 					q.size = 0;
 					insertFirst(token, q);
 				}
+        //else we update the existing queue
 				else
 				{
 						queueinsert(lineNum, &temp->lineNums);
-						//need to do this in queue function temp->qSize++;
-						//printf("val: %d abd val2: %d\n", temp->lineNums.queue[0], temp->lineNums.queue[1]);
 				}
 			}
 			token = strtok(NULL, " ");
@@ -82,33 +99,41 @@ int main()
 		lineNum++;
 	}
 	printList();
+  writeList(fout);
+  free(line);
+  fclose(fin);
 }
 
+//is the word an identifier?
 int identifierCheck(char *id)
 {
-	char *word = malloc(sizeof(id));
-	strcpy(word, id);
 	//if the word starts with a digit, it cannot be an identifier
-	if(isdigit(word[0]) || word[0] == '{' || word[0] == '}')
+	if(isdigit(id[0]))
 	{
 		return 0;
 	}
 }
 
+//remove characters that we want to ignore
 void removeJunk(char *line)
 {
-  char ignoreList[15] = {'.', '"', '<', '>', '#', '=', '+', '-', ';', '(', ')', '!', '|', '&', '*'};
-  int ignoreLen = 15;
+  //list of characters to ignore
+  char ignoreList[17] = {'.', '"', '<', '>', '#', '=', '+', '-', ';', '(', ')', '!', '|', '&', '*', '{', '}'};
+  int ignoreLen = 17;
 	int len = strlen(line);
 	int i;
+  //loop through each char in the line
 	for(i = 0; i < len; i++)
 	{
+    //this checks if the '->' is used, and removes it
     if(line[i] == '-' && line[i+1] == '>')
     {
+      //by setting the char to an empty space, the tokenizer will be able to split the words without any extra work
       line[i] = ' ';
       line[i+1] = ' ';
     }
     int j;
+    //loop through each element in the ignoreList and see if the character should be ignored
     for(j = 0; j <= ignoreLen; j++)
     {
       if(line[i] == ignoreList[j])
@@ -117,5 +142,4 @@ void removeJunk(char *line)
       }
     }
 	}
-  printf("Junk Removed: %s\n", line);
 }

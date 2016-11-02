@@ -14,6 +14,30 @@ struct node
 struct node *head = NULL;
 struct node *current = NULL;
 
+void writeList(FILE *fout)
+{
+  struct node *ptr = head;
+  fputs("Identifiers:\r\n\r\n", fout);
+
+  //start from the beginning
+  while(ptr != NULL)
+  {
+    int i = 0;
+     fputs(ptr->identifier, fout);
+     fputs(": ", fout);
+     while(i <= ptr->lineNums.size)
+     {
+       char num[10];
+       sprintf(num, "%d", ptr->lineNums.queue[i]);
+       fputs(num, fout);
+       fputs(", ", fout);
+       i++;
+     }
+     ptr = ptr->next;
+     fputs("\r\n", fout);
+  }
+  fclose(fout);
+}
 //display the list
 void printList()
 {
