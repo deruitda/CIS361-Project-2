@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "queue.h"
 
-struct node  
+struct node
 {
    struct queue lineNums;
    char *identifier;
@@ -18,16 +18,23 @@ struct node *current = NULL;
 void printList()
 {
    struct node *ptr = head;
-   printf("\n[ ");
+   printf("Identifiers:\n");
 
    //start from the beginning
    while(ptr != NULL)
-{        
-      printf("(%s,%d) ",ptr->identifier,ptr->lineNums.queue[0]);
+{
+      int i = 0;
+      //printf("(%s,%d) ",ptr->identifier,ptr->lineNums.queue[0]);
+      printf("%s: ", ptr->identifier);
+      while(i <= ptr->lineNums.size)
+      {
+        printf("%d ,", ptr->lineNums.queue[i]);
+        i++;
+      }
       ptr = ptr->next;
-   }
+      printf("\n");
 
-   printf(" ]\n");
+   }
 }
 
 //insert link at the first location
@@ -38,6 +45,7 @@ void insertFirst(char *identifier, struct queue lineNums)
 		head = malloc(sizeof(struct node));
 		head->identifier = identifier;
 		head->lineNums = lineNums;
+    //head->lineNums.size = -1;
 	}
 	else
 	{
@@ -46,33 +54,13 @@ void insertFirst(char *identifier, struct queue lineNums)
 
 		link->identifier = identifier;
 		link->lineNums = lineNums;
-
+    //link->lineNums.size = -1;
 		//point it to old first node
 		link->next = head;
-   
+
 		//point first to new first node
 		head = link;
 	}
-}
-
-//delete first item
-struct node* deleteFirst()
-{
-
-   //save reference to first link
-   struct node *tempLink = head;
-
-   //mark next to first link as first 
-   head = head->next;
-
-   //return the deleted link
-   return tempLink;
-}
-
-//is list empty
-bool isEmpty()
-{
-   return head == NULL;
 }
 
 int length()
@@ -101,8 +89,7 @@ struct node* find(char *identifier){
    }
 
    //navigate through list
-   while((current->identifier) != identifier){
-
+     while(strcmp(current->identifier, identifier) != 0){
       //if it is last node
       if(current->next == NULL){
          return NULL;
@@ -110,47 +97,8 @@ struct node* find(char *identifier){
          //go to next link
          current = current->next;
       }
-   }      
+   }
 
    //if lineNum found, return the current Link
-   return current;
-}
-
-//delete a link with given identifier
-struct node* delete(char *identifier){
-
-   //start from the first link
-   struct node* current = head;
-   struct node* previous = NULL;
-
-   //if list is empty
-   if(head == NULL){
-      return NULL;
-   }
-
-   //navigate through list
-   while(current->identifier != identifier){
-
-      //if it is last node
-      if(current->next == NULL){
-         return NULL;
-      }else {
-         //store reference to current link
-         previous = current;
-         //move to next link
-         current = current->next;             
-      }
-
-   }
-
-   //found a match, update the link
-   if(current == head) {
-      //change first to point to next link
-      head = head->next;
-   }else {
-      //bypass the current link
-      previous->next = current->next;
-   }    
-
    return current;
 }

@@ -1,6 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <test>
-#include <fuck>
-#include <ugh>
-#include <shit>
+#include "queue.h"
+
+int main()
+{
+  //here is a comment
+  char *name = "Bob";
+  int len = strlen(name);
+  int i = 0;
+  len = 1;
+}
