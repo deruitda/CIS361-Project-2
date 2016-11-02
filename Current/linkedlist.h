@@ -28,7 +28,7 @@ void printList()
       printf("%s: ", ptr->identifier);
       while(i <= ptr->lineNums.size)
       {
-        printf("%d ,", ptr->lineNums.queue[i]);
+        printf("%d, ", ptr->lineNums.queue[i]);
         i++;
       }
       ptr = ptr->next;

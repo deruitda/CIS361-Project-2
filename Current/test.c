@@ -8,4 +8,5 @@ int main()
   int len = strlen(name);
   int i = 0;
   len = 1;
+  test->name;
 }

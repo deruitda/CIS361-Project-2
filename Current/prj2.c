@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define LINESIZE 300
+void removeJunk(char *line);
 int main()
 {
 	FILE *fp;
@@ -96,17 +97,25 @@ int identifierCheck(char *id)
 
 void removeJunk(char *line)
 {
-	char *temp = malloc(strlen(line));
-	memcpy(temp, line);
-
-	int len = strlen(temp);
+  char ignoreList[15] = {'.', '"', '<', '>', '#', '=', '+', '-', ';', '(', ')', '!', '|', '&', '*'};
+  int ignoreLen = 15;
+	int len = strlen(line);
 	int i;
 	for(i = 0; i < len; i++)
 	{
-		if(temp[i] == '.')
-		{
-			printf("Found a dot\n");
-		}
+    if(line[i] == '-' && line[i+1] == '>')
+    {
+      line[i] = ' ';
+      line[i+1] = ' ';
+    }
+    int j;
+    for(j = 0; j <= ignoreLen; j++)
+    {
+      if(line[i] == ignoreList[j])
+      {
+        line[i] = ' ';
+      }
+    }
 	}
-
+  printf("Junk Removed: %s\n", line);
 }
