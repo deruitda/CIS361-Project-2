@@ -19,7 +19,6 @@ void writeList(FILE *fout)
   struct node *ptr = head;
   fputs("Identifiers:\r\n\r\n", fout);
 
-  //start from the beginning
   while(ptr != NULL)
   {
     int i = 0;
@@ -44,12 +43,12 @@ void printList()
    struct node *ptr = head;
    printf("Identifiers:\n");
 
-   //start from the beginning
+   //loop through all nodes
    while(ptr != NULL)
-{
+   {
       int i = 0;
-      //printf("(%s,%d) ",ptr->identifier,ptr->lineNums.queue[0]);
       printf("%s: ", ptr->identifier);
+      //print out line nums
       while(i <= ptr->lineNums.size)
       {
         printf("%d, ", ptr->lineNums.queue[i]);
@@ -57,11 +56,10 @@ void printList()
       }
       ptr = ptr->next;
       printf("\n");
-
    }
 }
 
-//insert link at the first location
+//insert link at the top of the list
 void insertFirst(char *identifier, struct queue lineNums)
 {
 	if(head == NULL)
@@ -78,26 +76,13 @@ void insertFirst(char *identifier, struct queue lineNums)
 
 		link->identifier = identifier;
 		link->lineNums = lineNums;
-    //link->lineNums.size = -1;
+
 		//point it to old first node
 		link->next = head;
 
 		//point first to new first node
 		head = link;
 	}
-}
-
-int length()
-{
-   int length = 0;
-   struct node *current;
-
-   for(current = head; current != NULL; current = current->next)
-{
-      length++;
-   }
-
-   return length;
 }
 
 //find a link with given identifier
@@ -108,7 +93,7 @@ struct node* find(char *identifier){
 
    //if list is empty
    if(head == NULL)
-{
+   {
       return NULL;
    }
 

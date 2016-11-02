@@ -82,8 +82,6 @@ int main(int argc, char *argv[])
       	if(temp == NULL)
 				{
 					struct queue q;
-					q.f = 0;
-					q.r = -1;
 					q.queue[0] = lineNum;
 					q.size = 0;
 					insertFirst(token, q);

@@ -1,7 +1,7 @@
 Identifiers:
 
 example: 15, 16, 
-Á: 13, 
+±: 13, 
 strlen: 13, 
 len: 13, 14, 16, 
 i: 12, 
